@@ -380,3 +380,12 @@ Tests       53 passed (53)
 
 ### 미해결 사항
 - `npm run build` — Next.js 16 내부 `workUnitAsyncStorage` 버그로 `/_not-found` prerendering 실패 (개발 서버는 정상 동작)
+
+---
+
+## 검증 결과
+
+> **완료일:** 2026-03-15 | **상태:** ✅ 완료
+
+- [코드 리뷰 보고서](sprint2/code-review.md) — High 이슈 1개(스케줄러 쿼리 범위), Critical 없음
+- [Playwright E2E 테스트 보고서](sprint2/playwright-report.md) — 92개 단위 테스트 통과, E2E 수동 검증 절차 포함
