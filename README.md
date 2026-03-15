@@ -100,7 +100,7 @@ Cheerly는 일정 시작 N분 전에 자동으로 알림을 보내고, Claude AI
 |----------|------|------|
 | **Sprint 1** | 프론트엔드 UI — 일정 목록/등록/상세/수정/삭제 화면 | 완료 |
 | **Sprint 2** | 백엔드 API + Prisma DB + Claude AI + 알림 스케줄러 + Teams Webhook | 완료 |
-| **Sprint 3** | Production 빌드 안정화, 배포 | 예정 |
+| **Sprint 3** | 테스트 강화(102개), CI/CD 파이프라인, 빌드 안정화, 배포 | 완료 |
 
 - 개발 기간: 2026년 3월 (해커톤)
 - 개발 서버 기준 모든 핵심 기능 정상 동작 확인
@@ -268,7 +268,7 @@ TEAMS_WEBHOOK_URL="https://outlook.office.com/webhook/..."
 
 ## 테스트
 
-저희 팀은 코드의 신뢰성을 최우선으로 생각합니다. 비즈니스 로직 전반에 걸쳐 **총 53개의 테스트 케이스**를 작성하고 전부 통과시켰습니다.
+코드의 신뢰성을 최우선으로 생각합니다. 비즈니스 로직 전반에 걸쳐 **총 102개의 테스트 케이스**를 작성하고 전부 통과시켰습니다.
 
 ```bash
 npx vitest run
@@ -277,26 +277,18 @@ npx vitest run
 ### 결과
 
 ```
-Test Files  12 passed (12)
-Tests       53 passed (53)
+Test Files  20 passed (20)
+Tests       102 passed (102)
 ```
 
-### 테스트 파일별 내용
+### 테스트 레이어
 
-| 파일 | 테스트 수 | 내용 |
-|------|:---------:|------|
-| `src/types/__tests__/schedule.test.ts` | 3 | 타입 구조 검증 |
-| `src/lib/validations/__tests__/schedule.test.ts` | 11 | Zod 유효성 검증 (create/update 스키마) |
-| `src/app/api/schedules/__tests__/route.test.ts` | 6 | 일정 CRUD API Routes |
-| `src/lib/__tests__/encouragements.test.ts` | 4 | 정적 격려 메시지 풀 |
-| `src/lib/__tests__/ai-encouragement.test.ts` | 3 | Claude AI 메시지 생성 + 폴백 |
-| `src/lib/channels/__tests__/teams.test.ts` | 3 | Teams Webhook 전송 및 재시도 |
-| `src/lib/__tests__/scheduler.test.ts` | 3 | 알림 스케줄러 (발송/중복방지/건너뜀) |
-| `src/components/ui/__tests__/Button.test.tsx` | 4 | Button UI 컴포넌트 |
-| `src/components/schedule/__tests__/ScheduleCard.test.tsx` | 3 | ScheduleCard 컴포넌트 |
-| `src/components/schedule/__tests__/ScheduleForm.test.tsx` | 4 | ScheduleForm 컴포넌트 |
-| `src/components/schedule/__tests__/DeleteConfirmDialog.test.tsx` | 4 | 삭제 확인 다이얼로그 |
-| `src/components/notification/__tests__/NotificationBell.test.tsx` | 3 | 알림 벨 컴포넌트 |
+| 레이어 | 파일 수 | 케이스 수 | 설명 |
+|--------|:-------:|:---------:|------|
+| **컴포넌트 단위** | 9 | ~45 | UI 컴포넌트 렌더링 및 인터랙션 |
+| **비즈니스 로직** | 5 | ~30 | AI 격려, 스케줄러, API 클라이언트 |
+| **API Route** | 3 | ~17 | REST 엔드포인트 (Prisma Mock) |
+| **DB 통합** | 1 | 10 | 실제 SQLite — Cascade 삭제, 정렬, 중복 방지 |
 
 ---
 
@@ -440,7 +432,7 @@ Server Component → Client Component 경계에서 Prisma의 `Date` 객체를 `.
 
 본 프로젝트는 Next.js 16의 최신 기능(Turbopack, Prisma v7 드라이버 어댑터 등)을 선제적으로 도입하였습니다.
 
-현재 Next.js 16 엔진 자체의 특정 프리렌더링 이슈(`workUnitAsyncStorage`)로 인해 `npm run build` 단계에서 에러가 발생합니다. 그러나 **모든 비즈니스 로직은 53개의 단위 테스트로 완벽하게 검증**되었으며, 개발 환경(`npm run dev`)에서 모든 기능을 문제없이 시연할 수 있습니다.
+Next.js 16.1.6 Turbopack에 `/_global-error` 페이지 사전 렌더링 버그(`workUnitAsyncStorage`)가 있습니다. `scripts/build-fix.js`로 자동 우회하며, **`npm run build` + `npm start` 정상 동작합니다.** 102개 테스트 전체 통과.
 
 그 외 제한 사항:
 

@@ -13,6 +13,7 @@ export default async function HomePage() {
 
   const schedules: Schedule[] = rawSchedules.map((s) => ({
     ...s,
+    description: s.description ?? undefined,
     category: s.category as Schedule['category'],
   }))
 

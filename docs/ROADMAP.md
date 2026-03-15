@@ -20,9 +20,9 @@
 
 | 항목 | 상태 |
 |------|------|
-| 전체 진행률 | Phase 1 완료 (Sprint 1~2, 53개 테스트 전체 통과) |
+| 전체 진행률 | Phase 1 완료 (Sprint 1~2, 102개 테스트 전체 통과) + CI/CD 배포 자동화 완료 |
 | 현재 Phase | Phase 1 완료 / Phase 2 준비 중 |
-| 현재 Sprint | Sprint 3 예정 (안정화 및 배포) |
+| 현재 Sprint | Sprint 3 예정 (반복 일정 + 메신저 확장) |
 | 다음 마일스톤 | Sprint 3 완료 후 Phase 2 (메신저 확장) |
 
 ---
@@ -646,4 +646,5 @@ PRD 범위 외이지만 향후 고려할 수 있는 기능들:
 - ⬜ 음성 알림 (TTS)
 - ⬜ 위치 기반 알림 (출발 시간 자동 계산)
 - ⬜ PostgreSQL 마이그레이션
-- ⬜ Docker 컨테이너화 및 CI/CD 파이프라인
+- ✅ CI/CD 파이프라인 (GitHub Actions + Jenkins)
+- ⬜ Docker 컨테이너화
