@@ -11,14 +11,17 @@ export default function NewSchedulePage() {
   const [isSuccess, setIsSuccess] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
 
-  function handleSubmit(data: ScheduleFormData) {
+  async function handleSubmit(data: ScheduleFormData) {
     setIsLoading(true)
-    // Sprint 1은 목 처리 — Sprint 2에서 실제 API 호출로 교체
-    setTimeout(() => {
-      console.log('일정 등록 데이터 (목):', data)
-      setIsLoading(false)
+    try {
+      const { scheduleApi } = await import('@/lib/api-client')
+      await scheduleApi.create(data)
       setIsSuccess(true)
-    }, 500)
+    } catch (err) {
+      console.error('일정 등록 실패:', err)
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   if (isSuccess) {
