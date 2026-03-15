@@ -14,7 +14,7 @@ export async function POST(req: NextRequest) {
   const parsed = createScheduleSchema.safeParse(body)
 
   if (!parsed.success) {
-    return NextResponse.json({ error: parsed.error.errors }, { status: 400 })
+    return NextResponse.json({ error: parsed.error.issues }, { status: 400 })
   }
 
   const schedule = await prisma.schedule.create({

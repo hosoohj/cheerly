@@ -4,8 +4,6 @@ import { NotificationBell } from '@/components/notification/NotificationBell'
 import { prisma } from '@/lib/db'
 import type { Schedule } from '@/types'
 
-export const dynamic = 'force-dynamic'
-
 export default async function HomePage() {
   const rawSchedules = await prisma.schedule.findMany({
     orderBy: { startTime: 'asc' },

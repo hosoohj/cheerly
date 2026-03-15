@@ -29,7 +29,7 @@ export async function PUT(req: NextRequest, { params }: RouteParams) {
   const parsed = updateScheduleSchema.safeParse(body)
 
   if (!parsed.success) {
-    return NextResponse.json({ error: parsed.error.errors }, { status: 400 })
+    return NextResponse.json({ error: parsed.error.issues }, { status: 400 })
   }
 
   const data = parsed.data

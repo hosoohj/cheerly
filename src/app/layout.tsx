@@ -1,9 +1,6 @@
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
 import './globals.css'
 import { Header } from '@/components/layout/Header'
-
-const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: 'Cheerly — 스마트 일정 관리',
@@ -17,7 +14,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ko">
-      <body className={`${inter.className} bg-gray-50 min-h-screen`}>
+      <body className="bg-gray-50 min-h-screen font-sans">
         <Header />
         {children}
       </body>
