@@ -1,5 +1,8 @@
+[variables]
+NIXPACKS_NODE_VERSION = "20"
+
 [phases.setup]
-nixPkgs = ["nodejs_22", "python3", "gnumake", "gcc"]
+nixPkgs = ["python3", "gnumake", "gcc"]
 
 [phases.install]
 cmds = ["npm install"]
