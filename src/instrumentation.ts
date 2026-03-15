@@ -1,7 +1,7 @@
 export async function register() {
   if (process.env.NEXT_RUNTIME === 'nodejs' && process.env.NODE_ENV !== 'test') {
-    // Vercel 환경에서 /tmp DB 자동 마이그레이션 + 시드
-    if (process.env.VERCEL) {
+    // /tmp DB 자동 마이그레이션 + 시드 (Vercel, Railway 등 ephemeral 환경)
+    if (process.env.VERCEL || process.env.RAILWAY_ENVIRONMENT) {
       try {
         const { execSync } = await import('child_process')
         execSync('npx prisma migrate deploy', {
