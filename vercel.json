@@ -1,0 +1,8 @@
+{
+  "buildCommand": "node scripts/build-fix.js",
+  "installCommand": "npm ci && npx prisma generate",
+  "framework": "nextjs",
+  "env": {
+    "DATABASE_URL": "file:/tmp/cheerly.db"
+  }
+}
