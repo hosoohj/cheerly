@@ -1,6 +1,5 @@
 [build]
-builder = "nixpacks"
-buildCommand = "npx prisma generate && node scripts/build-fix.js"
+builder = "dockerfile"
 
 [deploy]
 startCommand = "npm start"
