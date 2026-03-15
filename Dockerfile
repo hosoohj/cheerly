@@ -13,8 +13,6 @@ WORKDIR /app
 COPY package*.json ./
 COPY prisma.config.ts ./
 COPY prisma/ ./prisma/
-COPY src/generated/ ./src/generated/ 2>/dev/null || true
-
 RUN npm install
 
 COPY . .
