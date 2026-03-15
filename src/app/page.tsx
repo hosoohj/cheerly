@@ -1,5 +1,6 @@
 import { Container } from '@/components/layout/Container'
 import { ScheduleList } from '@/components/schedule/ScheduleList'
+import { NotificationBell } from '@/components/notification/NotificationBell'
 import { prisma } from '@/lib/db'
 import type { Schedule } from '@/types'
 
@@ -25,12 +26,7 @@ export default async function HomePage() {
             일정 시작 전에 격려 메시지를 받아보세요
           </p>
         </div>
-        {unreadCount > 0 && (
-          <div className="flex items-center gap-1 bg-orange-100 text-orange-700 text-xs font-medium px-2.5 py-1 rounded-full">
-            <span>알림</span>
-            <span>미읽음 {unreadCount}개</span>
-          </div>
-        )}
+        <NotificationBell unreadCount={unreadCount} />
       </div>
       <ScheduleList schedules={schedules} />
     </Container>
