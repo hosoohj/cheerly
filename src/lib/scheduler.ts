@@ -7,6 +7,7 @@ const REMINDER_WINDOW_SECONDS = 60
 
 export async function checkAndSendReminders() {
   const now = new Date()
+  const timeStr = now.toLocaleTimeString('ko-KR')
 
   // 앞으로 알림이 필요한 일정 조회 (시작 전, 알림 시간 ±60초 윈도우 내)
   const schedules = await prisma.schedule.findMany({
@@ -22,10 +23,15 @@ export async function checkAndSendReminders() {
     },
   })
 
+  console.log(`[Scheduler] ${timeStr} 체크 — 대기 중인 일정 ${schedules.length}개`)
+
   for (const schedule of schedules) {
     const reminderTime = new Date(schedule.startTime.getTime() - schedule.reminderMinutes * 60 * 1000)
-    const diffMs = Math.abs(now.getTime() - reminderTime.getTime())
-    const diffSeconds = diffMs / 1000
+    const diffMs = now.getTime() - reminderTime.getTime()
+    const diffSeconds = Math.abs(diffMs) / 1000
+    const remainMin = Math.round((schedule.startTime.getTime() - now.getTime()) / 60000)
+
+    console.log(`[Scheduler]   └ "${schedule.title}" — 알림까지 ${Math.round(diffSeconds)}초 차이 (일정까지 ${remainMin}분)`)
 
     // 알림 시간 ±60초 윈도우 내인지 확인
     if (diffSeconds > REMINDER_WINDOW_SECONDS) continue
