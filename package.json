@@ -12,9 +12,19 @@
     "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.78.0",
+    "@prisma/adapter-better-sqlite3": "^7.5.0",
+    "@prisma/client": "^7.5.0",
+    "better-sqlite3": "^12.8.0",
     "next": "16.1.6",
+    "node-cron": "^4.2.1",
+    "prisma": "^7.5.0",
     "react": "19.2.3",
-    "react-dom": "19.2.3"
+    "react-dom": "19.2.3",
+    "zod": "^4.3.6"
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
@@ -22,6 +32,7 @@
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.1",
     "@types/node": "^20",
+    "@types/node-cron": "^3.0.11",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@vitejs/plugin-react": "^6.0.1",
@@ -29,6 +40,8 @@
     "eslint-config-next": "16.1.6",
     "jsdom": "^29.0.0",
     "tailwindcss": "^4",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.21.0",
     "typescript": "^5",
     "vitest": "^4.1.0"
   }
