@@ -33,7 +33,7 @@ function getRemainingTime(startTime: Date): string {
 
 export function ScheduleCard({ schedule }: ScheduleCardProps) {
   const remaining = getRemainingTime(schedule.startTime)
-  const isImminent = schedule.startTime.getTime() - Date.now() < schedule.reminderMinutes * 60 * 1000
+  const isImminent = schedule.startTime.getTime() - new Date().getTime() < schedule.reminderMinutes * 60 * 1000
 
   return (
     <Link href={`/schedules/${schedule.id}`}>
