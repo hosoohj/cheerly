@@ -36,8 +36,9 @@ export function ScheduleCard({ schedule }: ScheduleCardProps) {
   const isImminent = schedule.startTime.getTime() - new Date().getTime() < schedule.reminderMinutes * 60 * 1000
 
   return (
-    <Link href={`/schedules/${schedule.id}`}>
+    <Link href={`/schedules/${schedule.id}`} aria-label={`${schedule.title} — ${remaining}`}>
       <div
+        role="article"
         className={`
           bg-white rounded-xl border p-4 shadow-sm
           hover:shadow-md hover:border-blue-200

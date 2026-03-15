@@ -1,6 +1,7 @@
 import { z } from 'zod'
+import { SCHEDULE_CATEGORIES } from '@/lib/constants'
 
-const CATEGORIES = ['WORK', 'STUDY', 'PERSONAL', 'FAMILY'] as const
+const CATEGORIES = SCHEDULE_CATEGORIES as unknown as readonly [string, ...string[]]
 
 export const createScheduleSchema = z.object({
   title: z.string().min(1, '제목을 입력해주세요').max(100, '제목은 100자 이내로 입력해주세요'),

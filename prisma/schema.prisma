@@ -22,14 +22,19 @@ model Schedule {
   createdAt       DateTime       @default(now())
   updatedAt       DateTime       @updatedAt
   notifications   Notification[]
+
+  @@index([startTime])
 }
 
 model Notification {
-  id           String   @id @default(cuid())
-  scheduleId   String
-  message      String
+  id            String   @id @default(cuid())
+  scheduleId    String
+  message       String
   encouragement String
-  sentAt       DateTime @default(now())
-  isRead       Boolean  @default(false)
-  schedule     Schedule @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
+  sentAt        DateTime @default(now())
+  isRead        Boolean  @default(false)
+  schedule      Schedule @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
+
+  @@index([sentAt])
+  @@index([scheduleId, sentAt])
 }

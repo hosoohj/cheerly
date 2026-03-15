@@ -10,15 +10,18 @@ export default function NewSchedulePage() {
   const router = useRouter()
   const [isSuccess, setIsSuccess] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
   async function handleSubmit(data: ScheduleFormData) {
     setIsLoading(true)
+    setErrorMessage(null)
     try {
       const { scheduleApi } = await import('@/lib/api-client')
       await scheduleApi.create(data)
       setIsSuccess(true)
     } catch (err) {
       console.error('일정 등록 실패:', err)
+      setErrorMessage('일정 등록에 실패했습니다. 다시 시도해 주세요.')
     } finally {
       setIsLoading(false)
     }
@@ -60,6 +63,9 @@ export default function NewSchedulePage() {
           일정과 함께 받을 격려 메시지가 준비되어 있어요
         </p>
       </div>
+      {errorMessage && (
+        <p className="text-sm text-red-500 mb-4">{errorMessage}</p>
+      )}
       <ScheduleForm onSubmit={handleSubmit} isLoading={isLoading} />
     </Container>
   )

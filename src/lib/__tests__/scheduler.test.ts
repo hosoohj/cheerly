@@ -15,8 +15,10 @@ vi.mock('@/lib/ai-encouragement', () => ({
   getEncouragementMessage: vi.fn().mockResolvedValue('화이팅!'),
 }))
 
-vi.mock('@/lib/channels/teams', () => ({
-  sendTeamsNotification: vi.fn().mockResolvedValue(true),
+vi.mock('@/lib/channels', () => ({
+  getNotificationChannels: vi.fn().mockReturnValue([
+    { name: 'Teams', isEnabled: () => true, send: vi.fn().mockResolvedValue(true) },
+  ]),
 }))
 
 import { prisma } from '@/lib/db'
@@ -40,6 +42,7 @@ describe('checkAndSendReminders', () => {
         createdAt: new Date(),
         updatedAt: new Date(),
         notifications: [],
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any,
     ])
 
@@ -81,6 +84,7 @@ describe('checkAndSendReminders', () => {
             isRead: false,
           },
         ],
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any,
     ])
 
@@ -104,11 +108,38 @@ describe('checkAndSendReminders', () => {
         createdAt: new Date(),
         updatedAt: new Date(),
         notifications: [],
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any,
     ])
 
     await checkAndSendReminders()
 
+    expect(prisma.notification.create).not.toHaveBeenCalled()
+  })
+
+  it('알림 시간이 아직 되지 않은 경우(30초 후) 알림을 보내지 않는다', async () => {
+    const now = new Date()
+    // 알림 시간 = startTime - reminderMinutes분 = 30초 후 (아직 미도달)
+    const startTime = new Date(now.getTime() + 10 * 60 * 1000 + 30 * 1000) // 10분 30초 후
+
+    vi.mocked(prisma.schedule.findMany).mockResolvedValue([
+      {
+        id: 'cuid3',
+        title: '아직 이른 회의',
+        description: '',
+        startTime,
+        reminderMinutes: 10,
+        category: 'WORK',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        notifications: [],
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } as any,
+    ])
+
+    await checkAndSendReminders()
+
+    // 알림 시간이 30초 후이므로 아직 전송하지 않아야 함
     expect(prisma.notification.create).not.toHaveBeenCalled()
   })
 })

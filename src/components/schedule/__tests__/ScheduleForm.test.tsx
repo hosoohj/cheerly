@@ -12,10 +12,10 @@ describe('ScheduleForm 컴포넌트', () => {
     expect(screen.getByLabelText(/일정 유형/)).toBeInTheDocument()
   })
 
-  it('알림 시간 기본값이 20분이다', () => {
+  it('알림 시간 기본값이 10분이다', () => {
     render(<ScheduleForm onSubmit={vi.fn()} />)
     const reminderSelect = screen.getByLabelText(/알림 시간/) as HTMLSelectElement
-    expect(reminderSelect.value).toBe('20')
+    expect(reminderSelect.value).toBe('10')
   })
 
   it('제목이 비어있으면 제출이 막힌다', async () => {

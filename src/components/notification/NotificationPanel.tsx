@@ -24,8 +24,12 @@ export function NotificationPanel({ notifications, onClose, onRead }: Notificati
 
   async function handleItemClick(notification: Notification) {
     if (!notification.isRead) {
-      await notificationApi.markAsRead(notification.id)
-      onRead(notification.id)
+      try {
+        await notificationApi.markAsRead(notification.id)
+        onRead(notification.id)
+      } catch (err) {
+        console.error('알림 읽음 처리 실패:', err)
+      }
     }
     router.push(`/schedules/${notification.scheduleId}`)
     onClose()

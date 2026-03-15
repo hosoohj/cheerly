@@ -1,6 +1,7 @@
 import { prisma } from '@/lib/db'
 import { getEncouragementMessage } from '@/lib/ai-encouragement'
-import { sendTeamsNotification } from '@/lib/channels/teams'
+import { getNotificationChannels } from '@/lib/channels'
+import { SCHEDULE_CATEGORIES } from '@/lib/constants'
 import type { ScheduleCategory } from '@/types'
 
 const REMINDER_WINDOW_SECONDS = 60
@@ -28,22 +29,23 @@ export async function checkAndSendReminders() {
   for (const schedule of schedules) {
     const reminderTime = new Date(schedule.startTime.getTime() - schedule.reminderMinutes * 60 * 1000)
     const diffMs = now.getTime() - reminderTime.getTime()
-    const diffSeconds = Math.abs(diffMs) / 1000
     const remainMin = Math.round((schedule.startTime.getTime() - now.getTime()) / 60000)
 
-    console.log(`[Scheduler]   └ "${schedule.title}" — 알림까지 ${Math.round(diffSeconds)}초 차이 (일정까지 ${remainMin}분)`)
+    console.log(`[Scheduler]   └ "${schedule.title}" — 알림 기준 ${Math.round(diffMs / 1000)}초 경과 (일정까지 ${remainMin}분)`)
 
-    // 알림 시간 ±60초 윈도우 내인지 확인
-    if (diffSeconds > REMINDER_WINDOW_SECONDS) continue
+    // 아직 알림 시간이 되지 않은 경우 스킵
+    if (diffMs < 0) continue
+    // 알림 윈도우(60초)를 초과한 경우 스킵 (이미 지남)
+    if (diffMs / 1000 > REMINDER_WINDOW_SECONDS) continue
 
     // 중복 알림 방지 (최근 2분 내 이미 알림이 있으면 스킵)
     if (schedule.notifications.length > 0) continue
 
     try {
-      const encouragement = await getEncouragementMessage(
-        schedule.title,
-        schedule.category as ScheduleCategory
-      )
+      const category: ScheduleCategory = (SCHEDULE_CATEGORIES as readonly string[]).includes(schedule.category)
+        ? (schedule.category as ScheduleCategory)
+        : 'PERSONAL'
+      const encouragement = await getEncouragementMessage(schedule.title, category)
       const message = `${schedule.title} 시작까지 ${schedule.reminderMinutes}분 남았습니다.`
 
       // DB에 알림 저장
@@ -56,18 +58,17 @@ export async function checkAndSendReminders() {
         },
       })
 
-      // Teams 웹훅 전송
-      const webhookUrl = process.env.TEAMS_WEBHOOK_URL ?? ''
-      if (webhookUrl) {
-        await sendTeamsNotification(webhookUrl, {
-          title: schedule.title,
-          message,
-          encouragement,
-          scheduleId: schedule.id,
-        })
+      // 등록된 모든 알림 채널로 전송
+      const channels = getNotificationChannels()
+      for (const channel of channels) {
+        if (!channel.isEnabled()) continue
+        const ok = await channel.send({ title: schedule.title, message, encouragement, scheduleId: schedule.id })
+        if (!ok) {
+          console.warn(`[Scheduler] ${channel.name} 전송 실패 (DB 알림은 저장됨): ${schedule.title}`)
+        }
       }
 
-      console.log(`[Scheduler] 알림 전송: ${schedule.title}`)
+      console.log(`[Scheduler] 알림 전송 완료: ${schedule.title}`)
     } catch (err) {
       console.error(`[Scheduler] 알림 전송 실패 (${schedule.id}):`, err)
     }

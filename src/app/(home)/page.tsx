@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import { Container } from '@/components/layout/Container'
 import { ScheduleList } from '@/components/schedule/ScheduleList'
 import { NotificationBell } from '@/components/notification/NotificationBell'
@@ -9,7 +11,10 @@ export default async function HomePage() {
     orderBy: { startTime: 'asc' },
   })
 
-  const schedules = rawSchedules as unknown as Schedule[]
+  const schedules: Schedule[] = rawSchedules.map((s) => ({
+    ...s,
+    category: s.category as Schedule['category'],
+  }))
 
   const unreadCount = await prisma.notification.count({
     where: { isRead: false },

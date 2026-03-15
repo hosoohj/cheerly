@@ -4,5 +4,5 @@ export interface Notification {
   message: string
   encouragement: string
   sentAt: Date
-  isRead?: boolean
+  isRead: boolean
 }

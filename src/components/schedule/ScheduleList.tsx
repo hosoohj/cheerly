@@ -11,15 +11,13 @@ export function ScheduleList({ schedules }: ScheduleListProps) {
     return <EmptyState />
   }
 
-  const sorted = [...schedules].sort(
-    (a, b) => a.startTime.getTime() - b.startTime.getTime()
-  )
-
   return (
-    <div className="flex flex-col gap-3">
-      {sorted.map((schedule) => (
-        <ScheduleCard key={schedule.id} schedule={schedule} />
+    <ul className="flex flex-col gap-3 list-none p-0 m-0" aria-label="일정 목록">
+      {schedules.map((schedule) => (
+        <li key={schedule.id}>
+          <ScheduleCard schedule={schedule} />
+        </li>
       ))}
-    </div>
+    </ul>
   )
 }

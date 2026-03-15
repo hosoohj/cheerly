@@ -17,7 +17,7 @@ import { prisma } from '@/lib/db'
 import { GET, POST } from '../route'
 import { GET as GET_ONE, PUT, DELETE } from '../[id]/route'
 
-function makeRequest(method: string, body?: unknown, params?: Record<string, string>) {
+function makeRequest(method: string, body?: unknown) {
   const req = new Request('http://localhost/api/schedules', {
     method,
     headers: { 'Content-Type': 'application/json' },

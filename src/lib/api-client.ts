@@ -26,8 +26,8 @@ export const scheduleApi = {
       body: JSON.stringify(payload),
     })
     if (!res.ok) {
-      const err = await res.json().catch(() => ({}))
-      throw new Error(err.message ?? '일정 등록 실패')
+      const body = await res.json().catch(() => ({})) as { error?: string; issues?: unknown[] }
+      throw new Error(typeof body.error === 'string' ? body.error : '일정 등록 실패')
     }
     return res.json()
   },
@@ -42,7 +42,10 @@ export const scheduleApi = {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
     })
-    if (!res.ok) throw new Error('일정 수정 실패')
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({})) as { error?: string }
+      throw new Error(typeof body.error === 'string' ? body.error : '일정 수정 실패')
+    }
     return res.json()
   },
 

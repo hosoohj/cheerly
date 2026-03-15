@@ -46,7 +46,8 @@ describe('createScheduleSchema', () => {
   })
 
   it('description 없이도 성공한다', () => {
-    const { description: _, ...dataWithoutDesc } = validData
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { description: _desc, ...dataWithoutDesc } = validData
     const result = createScheduleSchema.safeParse(dataWithoutDesc)
     expect(result.success).toBe(true)
   })

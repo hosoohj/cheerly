@@ -6,17 +6,22 @@ interface RouteParams {
 }
 
 export async function PATCH(_req: NextRequest, { params }: RouteParams) {
-  const { id } = await params
-  const existing = await prisma.notification.findUnique({ where: { id } })
+  try {
+    const { id } = await params
+    const existing = await prisma.notification.findUnique({ where: { id } })
 
-  if (!existing) {
-    return NextResponse.json({ error: '알림을 찾을 수 없습니다' }, { status: 404 })
+    if (!existing) {
+      return NextResponse.json({ error: '알림을 찾을 수 없습니다' }, { status: 404 })
+    }
+
+    const notification = await prisma.notification.update({
+      where: { id },
+      data: { isRead: true },
+    })
+
+    return NextResponse.json(notification)
+  } catch (err) {
+    console.error('[API] PATCH /api/notifications/[id]/read 실패:', err)
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
-
-  const notification = await prisma.notification.update({
-    where: { id },
-    data: { isRead: true },
-  })
-
-  return NextResponse.json(notification)
 }

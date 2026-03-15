@@ -32,17 +32,20 @@ export function ScheduleDetail({ schedule }: ScheduleDetailProps) {
   const [isEditing, setIsEditing] = useState(false)
   const [showDeleteDialog, setShowDeleteDialog] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
   const startTime = new Date(schedule.startTime)
 
   async function handleUpdate(data: ScheduleFormData) {
     setIsLoading(true)
+    setErrorMessage(null)
     try {
       await scheduleApi.update(schedule.id, data)
       router.refresh()
       setIsEditing(false)
     } catch (err) {
       console.error('일정 수정 실패:', err)
+      setErrorMessage('일정 수정에 실패했습니다. 다시 시도해 주세요.')
     } finally {
       setIsLoading(false)
     }
@@ -50,11 +53,13 @@ export function ScheduleDetail({ schedule }: ScheduleDetailProps) {
 
   async function handleDelete() {
     setIsLoading(true)
+    setErrorMessage(null)
     try {
       await scheduleApi.delete(schedule.id)
       router.push('/')
     } catch (err) {
       console.error('일정 삭제 실패:', err)
+      setErrorMessage('일정 삭제에 실패했습니다. 다시 시도해 주세요.')
       setIsLoading(false)
     }
   }
@@ -75,6 +80,7 @@ export function ScheduleDetail({ schedule }: ScheduleDetailProps) {
         <ScheduleForm
           onSubmit={handleUpdate}
           isLoading={isLoading}
+          submitLabel="일정 수정"
           initialData={{
             title: schedule.title,
             description: schedule.description ?? undefined,
@@ -125,6 +131,10 @@ export function ScheduleDetail({ schedule }: ScheduleDetailProps) {
             <span className="font-medium">{schedule.reminderMinutes}분 전</span>
           </div>
         </div>
+
+        {errorMessage && (
+          <p className="text-sm text-red-500 mt-4">{errorMessage}</p>
+        )}
 
         <div className="flex gap-3 mt-6">
           <Button

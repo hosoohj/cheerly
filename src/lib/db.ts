@@ -19,6 +19,6 @@ export function getPrisma(): PrismaClient {
 // 편의를 위한 getter proxy
 export const prisma = new Proxy({} as PrismaClient, {
   get(_target, prop) {
-    return (getPrisma() as any)[prop]
+    return Reflect.get(getPrisma(), prop)
   },
 })

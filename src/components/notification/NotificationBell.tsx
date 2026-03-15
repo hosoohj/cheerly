@@ -35,12 +35,15 @@ export function NotificationBell({ unreadCount: initialUnread }: NotificationBel
   }, [])
 
   async function handleOpen() {
-    setIsOpen((prev) => !prev)
-    if (!isOpen) {
+    const nextOpen = !isOpen
+    setIsOpen(nextOpen)
+    if (nextOpen) {
       try {
         const data = await notificationApi.list()
-        setNotifications(data)
-        setUnreadCount(data.filter((n: Notification) => !n.isRead).length)
+        if (Array.isArray(data)) {
+          setNotifications(data)
+          setUnreadCount(data.filter((n: Notification) => !n.isRead).length)
+        }
       } catch (err) {
         console.error('알림 목록 조회 실패:', err)
       }

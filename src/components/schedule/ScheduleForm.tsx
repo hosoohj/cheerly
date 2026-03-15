@@ -9,6 +9,7 @@ interface ScheduleFormProps {
   onSubmit: (data: ScheduleFormData) => void
   initialData?: Partial<ScheduleFormData>
   isLoading?: boolean
+  submitLabel?: string
 }
 
 const CATEGORIES: { value: ScheduleCategory; label: string }[] = [
@@ -31,12 +32,12 @@ interface FormErrors {
   startTime?: string
 }
 
-export function ScheduleForm({ onSubmit, initialData, isLoading = false }: ScheduleFormProps) {
+export function ScheduleForm({ onSubmit, initialData, isLoading = false, submitLabel = '일정 등록' }: ScheduleFormProps) {
   const [title, setTitle] = useState(initialData?.title ?? '')
   const [description, setDescription] = useState(initialData?.description ?? '')
   const [startTime, setStartTime] = useState(initialData?.startTime ?? '')
   const [reminderMinutes, setReminderMinutes] = useState(
-    initialData?.reminderMinutes ?? 20
+    initialData?.reminderMinutes ?? 10
   )
   const [category, setCategory] = useState<ScheduleCategory>(
     initialData?.category ?? 'WORK'
@@ -71,7 +72,7 @@ export function ScheduleForm({ onSubmit, initialData, isLoading = false }: Sched
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+    <form onSubmit={handleSubmit} className="flex flex-col gap-5" noValidate>
       <Input
         id="title"
         label="일정 제목 *"
@@ -117,26 +118,28 @@ export function ScheduleForm({ onSubmit, initialData, isLoading = false }: Sched
       </div>
 
       <div className="flex flex-col gap-1">
-        <label htmlFor="category" className="text-sm font-medium text-gray-700">
+        <span id="category-label" className="text-sm font-medium text-gray-700">
           일정 유형 *
-        </label>
+        </span>
+        {/* 히든 select: 폼 직렬화용. aria-hidden으로 스크린리더 중복 방지 */}
         <select
-          id="category"
           value={category}
           onChange={(e) => setCategory(e.target.value as ScheduleCategory)}
           className="sr-only"
           aria-hidden="true"
+          tabIndex={-1}
         >
           {CATEGORIES.map((cat) => (
             <option key={cat.value} value={cat.value}>{cat.label}</option>
           ))}
         </select>
-        <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+        <div role="group" aria-labelledby="category-label" className="grid grid-cols-2 gap-2 sm:grid-cols-4">
           {CATEGORIES.map((cat) => (
             <button
               key={cat.value}
               type="button"
               onClick={() => setCategory(cat.value)}
+              aria-pressed={category === cat.value}
               className={`
                 py-2 px-3 rounded-lg border text-sm font-medium transition-colors
                 ${
@@ -153,7 +156,7 @@ export function ScheduleForm({ onSubmit, initialData, isLoading = false }: Sched
       </div>
 
       <Button type="submit" disabled={isLoading} className="w-full mt-2">
-        {isLoading ? '등록 중...' : '일정 등록'}
+        {isLoading ? '처리 중...' : submitLabel}
       </Button>
     </form>
   )

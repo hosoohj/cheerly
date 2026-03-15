@@ -15,8 +15,16 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body className="bg-gray-50 min-h-screen font-sans">
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-blue-600 focus:text-white focus:rounded-lg focus:text-sm focus:font-medium"
+        >
+          본문 바로가기
+        </a>
         <Header />
-        {children}
+        <main id="main-content">
+          {children}
+        </main>
       </body>
     </html>
   )
